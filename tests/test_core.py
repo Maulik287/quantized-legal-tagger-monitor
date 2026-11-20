@@ -45,9 +45,20 @@ def test_milestone_2():
 
 
 # Milestone 3: Evaluate the tagging accuracy of the fine-tuned model.
-@pytest.mark.skip(reason="remove this line when you start milestone 3")
 def test_milestone_3():
-    raise NotImplementedError("write the test for milestone 3")
+    eval_res = milestone_3()
+    assert isinstance(eval_res, dict)
+    assert "accuracy" in eval_res
+    assert "correct" in eval_res
+    assert "total" in eval_res
+    assert "predictions" in eval_res
+    assert eval_res["total"] > 0
+    assert 0.0 <= eval_res["accuracy"] <= 1.0
+    assert len(eval_res["predictions"]) == eval_res["total"]
+    pred = eval_res["predictions"][0]
+    assert "expected" in pred
+    assert "predicted" in pred
+    assert "correct" in pred
 
 
 # Milestone 4: Apply dynamic and static post-training quantization to the trained model.

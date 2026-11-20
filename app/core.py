@@ -352,8 +352,73 @@ def milestone_2(
 
 # --- Milestone 3: Evaluate the tagging accuracy of the fine-tuned model.
 # Hint: Utilize the evaluation methods demonstrated in the `Fine-Tune GPT-2 to Tag Legal Contract Clauses` drill to assess your model's tagging accuracy.
-def milestone_3():  # TODO(milestone 3)
-    raise NotImplementedError("TODO(milestone 3)")
+def milestone_3(
+    model: nn.Module | None = None,
+    tokenizer: SimpleLegalTokenizer | None = None,
+    eval_samples: list[dict] | None = None,
+    max_new_tokens: int = 15,
+) -> dict[str, Any]:
+    """Evaluate the legal clause tagging accuracy of the fine-tuned GPT-2 model."""
+    if model is None or tokenizer is None:
+        train_output = milestone_2(epochs=1, max_steps=2)
+        model = train_output["model"]
+        tokenizer = train_output["tokenizer"]
+        
+    if eval_samples is None:
+        eval_data = milestone_1(split="test", num_samples=5)
+        eval_samples = eval_data["samples"]
+        
+    model.eval()
+    predictions = []
+    correct_count = 0
+    
+    stop_id = tokenizer.token_to_id.get("\n", tokenizer.eos_token_id)
+    
+    with torch.no_grad():
+        for sample in eval_samples:
+            prompt_str = sample["prompt"]
+            expected_tag = sample["tag"]
+            prompt_ids = tokenizer.encode(prompt_str)
+            input_tensor = torch.tensor([prompt_ids], dtype=torch.long)
+            
+            gen_ids = model.generate(
+                input_tensor,
+                max_new_tokens=max_new_tokens,
+                eos_id=tokenizer.eos_token_id,
+                stop_token_id=stop_id
+            )
+            
+            new_ids = gen_ids[0, len(prompt_ids):]
+            generated_text = tokenizer.decode(new_ids).strip()
+            
+            predicted_tag = generated_text.split("\n")[0].strip()
+            if not predicted_tag:
+                predicted_tag = "Unclassified"
+                
+            is_correct = (
+                predicted_tag.lower() == expected_tag.lower() or
+                expected_tag.lower() in predicted_tag.lower() or
+                predicted_tag.lower() in expected_tag.lower()
+            )
+            if is_correct:
+                correct_count += 1
+                
+            predictions.append({
+                "clause": sample["clause"],
+                "expected": expected_tag,
+                "predicted": predicted_tag,
+                "correct": is_correct,
+            })
+            
+    total = len(eval_samples)
+    accuracy = round(correct_count / total, 4) if total > 0 else 0.0
+    
+    return {
+        "accuracy": accuracy,
+        "correct": correct_count,
+        "total": total,
+        "predictions": predictions,
+    }
 
 
 # --- Milestone 4: Apply dynamic and static post-training quantization to the trained model.
