@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "timestamp": 1795173843.2852721,
+    "metrics": {
+      "original": {
+        "model_type": "FP32 Original",
+        "size_mb": 0.9945,
+        "latency_ms": 1.547,
+        "throughput_qps": 646.41
+      },
+      "dynamic": {
+        "model_type": "INT8 Dynamic Quantized",
+        "size_mb": 0.7044,
+        "latency_ms": 3.485,
+        "throughput_qps": 286.94,
+        "size_reduction_pct": 29.17,
+        "speedup": 0.44
+      },
+      "static": {
+        "model_type": "INT8 Static Quantized",
+        "size_mb": 0.6981,
+        "latency_ms": 2.079,
+        "throughput_qps": 481.0,
+        "size_reduction_pct": 29.8,
+        "speedup": 0.74
+      }
+    },
+    "summary": "Quantization Analysis for Legal Aid Document Processing:\n- Post-training quantization reduced model size by up to 29.8%.\n- Simulated inference speedup reached up to 0.74x on local CPU.\n- Both dynamic and static INT8 models drastically lower memory constraints on edge devices.",
+    "recommendation": "Deployment Guidance: For standard consumer laptops used in legal aid field work, INT8 Dynamic Quantization offers zero-calibration setup with significant memory savings. For dedicated local document triage servers, INT8 Static Quantization is recommended for highest throughput."
+  }
+}

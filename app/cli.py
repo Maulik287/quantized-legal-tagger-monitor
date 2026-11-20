@@ -21,25 +21,25 @@ def main(argv: list[str] | None = None) -> None:
     
     # Milestone 1: Prepare data
     p_data = sub.add_parser("prepare-data", help="Prepare subset of LEDGAR dataset")
-    p_data.add_argument("--samples", type=int, default=10, help="Number of samples to prepare")
+    p_data.add_argument("--samples", type=int, default=15, help="Number of samples to prepare")
     
     # Milestone 2: Train / Fine-tune
     p_train = sub.add_parser("train", help="Fine-tune GPT-2 model on legal clauses")
     p_train.add_argument("--epochs", type=int, default=1, help="Training epochs")
-    p_train.add_argument("--steps", type=int, default=2, help="Max training steps")
+    p_train.add_argument("--steps", type=int, default=5, help="Max training steps")
     
     # Milestone 3: Evaluate
-    p_eval = sub.add_parser("evaluate", help="Evaluate legal clause tagging accuracy")
+    sub.add_parser("evaluate", help="Evaluate legal clause tagging accuracy")
     
     # Milestone 4: Quantize
-    p_quant = sub.add_parser("quantize", help="Apply dynamic and static post-training quantization")
+    sub.add_parser("quantize", help="Apply dynamic and static post-training quantization")
     
     # Milestone 5: Benchmark
     p_bench = sub.add_parser("benchmark", help="Compare model sizes and simulate inference speeds")
-    p_bench.add_argument("--runs", type=int, default=3, help="Number of benchmark iterations")
+    p_bench.add_argument("--runs", type=int, default=5, help="Number of benchmark iterations")
     
     # Milestone 6: Dashboard
-    p_dash = sub.add_parser("dashboard", help="Display comparative efficiency dashboard")
+    sub.add_parser("dashboard", help="Display comparative efficiency dashboard")
     
     # Run all
     sub.add_parser("run-all", help="Run complete end-to-end legal tagger pipeline")

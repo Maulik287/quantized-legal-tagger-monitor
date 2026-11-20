@@ -1,6 +1,6 @@
-"""Your tests. Each milestone in README.md gets one here: write the test first, then make it pass.
-
-They start skipped. Remove the `skip` line as you work on each milestone.
+"""Comprehensive test suite for the Quantized Legal Tagger Monitor.
+Validates all six milestones: dataset preparation, GPT-2 fine-tuning, accuracy evaluation,
+dynamic & static quantization, performance benchmarking, and dashboard generation.
 """
 import pytest
 from app.core import (
@@ -10,10 +10,12 @@ from app.core import (
     milestone_4,
     milestone_5,
     milestone_6,
+    generate_dashboard_table,
 )
 
-# Milestone 1: Prepare a subset of the LEDGAR dataset for legal clause tagging.
+
 def test_milestone_1():
+    """Milestone 1: Prepare a subset of the LEDGAR dataset for legal clause tagging."""
     data = milestone_1(num_samples=10)
     assert isinstance(data, dict)
     assert "samples" in data
@@ -32,8 +34,8 @@ def test_milestone_1():
     assert sample["tag"] in data["tags"]
 
 
-# Milestone 2: Fine-tune a GPT-2 model to tag legal clauses using the classification as generation approach.
 def test_milestone_2():
+    """Milestone 2: Fine-tune a GPT-2 model to tag legal clauses using classification as generation."""
     train_res = milestone_2(epochs=1, max_steps=2)
     assert isinstance(train_res, dict)
     assert "model" in train_res
@@ -44,8 +46,8 @@ def test_milestone_2():
     assert train_res["steps"] >= 1
 
 
-# Milestone 3: Evaluate the tagging accuracy of the fine-tuned model.
 def test_milestone_3():
+    """Milestone 3: Evaluate the tagging accuracy of the fine-tuned model."""
     eval_res = milestone_3()
     assert isinstance(eval_res, dict)
     assert "accuracy" in eval_res
@@ -61,8 +63,8 @@ def test_milestone_3():
     assert "correct" in pred
 
 
-# Milestone 4: Apply dynamic and static post-training quantization to the trained model.
 def test_milestone_4():
+    """Milestone 4: Apply dynamic and static post-training quantization to the trained model."""
     quant_res = milestone_4()
     assert isinstance(quant_res, dict)
     assert "original_model" in quant_res
@@ -75,8 +77,8 @@ def test_milestone_4():
     assert quant_res["static_model"] is not None
 
 
-# Milestone 5: Compare the original and quantized model sizes and measure simulated inference times.
 def test_milestone_5():
+    """Milestone 5: Compare the original and quantized model sizes and measure simulated inference times."""
     metrics = milestone_5(num_runs=2)
     assert isinstance(metrics, dict)
     assert "original" in metrics
@@ -94,8 +96,8 @@ def test_milestone_5():
     assert "speedup" in metrics["static"]
 
 
-# Milestone 6: Present a dashboard-like output of model efficiency metrics.
 def test_milestone_6():
+    """Milestone 6: Present a dashboard-like output of model efficiency metrics."""
     dashboard = milestone_6()
     assert isinstance(dashboard, dict)
     assert "table" in dashboard
@@ -105,3 +107,4 @@ def test_milestone_6():
     assert len(dashboard["table"]) > 0
     assert "FP32" in dashboard["table"] or "Original" in dashboard["table"]
     assert "INT8" in dashboard["table"] or "Dynamic" in dashboard["table"]
+    assert "Latency" in dashboard["table"]

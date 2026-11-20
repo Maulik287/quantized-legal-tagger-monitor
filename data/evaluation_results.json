@@ -1,0 +1,67 @@
+{
+  "accuracy": 0.0,
+  "correct": 0,
+  "total": 10,
+  "predictions": [
+    {
+      "clause": "Waiver of any breach of this Agreement does not constitute a waiver of any subsequent breach of the same or any other provision.",
+      "expected": "Amendments",
+      "predicted": "/raa?abCr, bVa0",
+      "correct": false
+    },
+    {
+      "clause": "This Agreement shall inure to the benefit of and be binding upon each party's permitted successors and assigns.",
+      "expected": "Assignment",
+      "predicted": "ua0(w\\I  the tn",
+      "correct": false
+    },
+    {
+      "clause": "In the event of civil unrest, natural catastrophes, strikes, or utility outages, neither party will be held in default for non-performance.",
+      "expected": "Force Majeure",
+      "predicted": "aaa0 be tntsfa0",
+      "correct": false
+    },
+    {
+      "clause": "Any notice given under this Agreement must be sent by registered email or certified mail to the addresses specified in the preamble.",
+      "expected": "Notices",
+      "predicted": "c7gr.ag aa0 b",
+      "correct": false
+    },
+    {
+      "clause": "This contract represents the complete and exclusive statement of agreement between the parties superseding all prior oral or written representations.",
+      "expected": "Entire Agreement",
+      "predicted": "tsfa0l5caaagqyY",
+      "correct": false
+    },
+    {
+      "clause": "The invalidity or unenforceability of any term or provision shall not affect the validity or enforceability of any other term or provision of this Agreement.",
+      "expected": "Severability",
+      "predicted": "aaagqyY=og b5 b",
+      "correct": false
+    },
+    {
+      "clause": "The recipient party agrees not to use any Confidential Information for any purpose other than performing its obligations under this Agreement.",
+      "expected": "Confidentiality",
+      "predicted": "E be tntsfa0l0l",
+      "correct": false
+    },
+    {
+      "clause": "This Agreement may be terminated by either party with or without cause upon sixty (60) days advance written notice to the other party.",
+      "expected": "Termination",
+      "predicted": "bCr, bVa0 be tn",
+      "correct": false
+    },
+    {
+      "clause": "The Contractor shall indemnify and hold harmless the Client against any third-party claims arising out of negligence or willful misconduct.",
+      "expected": "Indemnification",
+      "predicted": "bVa0 be tntsfa0",
+      "correct": false
+    },
+    {
+      "clause": "This Agreement shall be governed by, and interpreted in accordance with, the substantive laws of the State of New York.",
+      "expected": "Governing Law",
+      "predicted": "the tnaagqsG=n",
+      "correct": false
+    }
+  ]
+}

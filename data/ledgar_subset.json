@@ -1,0 +1,43 @@
+{
+  "samples": [
+    {
+      "clause": "Waiver of any breach of this Agreement does not constitute a waiver of any subsequent breach of the same or any other provision.",
+      "tag": "Amendments",
+      "prompt": "Clause: Waiver of any breach of this Agreement does not constitute a waiver of any subsequent breach of the same or any other provision.\nTag: ",
+      "formatted_text": "Clause: Waiver of any breach of this Agreement does not constitute a waiver of any subsequent breach of the same or any other provision.\nTag: Amendments"
+    },
+    {
+      "clause": "This Agreement shall inure to the benefit of and be binding upon each party's permitted successors and assigns.",
+      "tag": "Assignment",
+      "prompt": "Clause: This Agreement shall inure to the benefit of and be binding upon each party's permitted successors and assigns.\nTag: ",
+      "formatted_text": "Clause: This Agreement shall inure to the benefit of and be binding upon each party's permitted successors and assigns.\nTag: Assignment"
+    },
+    {
+      "clause": "In the event of civil unrest, natural catastrophes, strikes, or utility outages, neither party will be held in default for non-performance.",
+      "tag": "Force Majeure",
+      "prompt": "Clause: In the event of civil unrest, natural catastrophes, strikes, or utility outages, neither party will be held in default for non-performance.\nTag: ",
+      "formatted_text": "Clause: In the event of civil unrest, natural catastrophes, strikes, or utility outages, neither party will be held in default for non-performance.\nTag: Force Majeure"
+    },
+    {
+      "clause": "Any notice given under this Agreement must be sent by registered email or certified mail to the addresses specified in the preamble.",
+      "tag": "Notices",
+      "prompt": "Clause: Any notice given under this Agreement must be sent by registered email or certified mail to the addresses specified in the preamble.\nTag: ",
+      "formatted_text": "Clause: Any notice given under this Agreement must be sent by registered email or certified mail to the addresses specified in the preamble.\nTag: Notices"
+    },
+    {
+      "clause": "This contract represents the complete and exclusive statement of agreement between the parties superseding all prior oral or written representations.",
+      "tag": "Entire Agreement",
+      "prompt": "Clause: This contract represents the complete and exclusive statement of agreement between the parties superseding all prior oral or written representations.\nTag: ",
+      "formatted_text": "Clause: This contract represents the complete and exclusive statement of agreement between the parties superseding all prior oral or written representations.\nTag: Entire Agreement"
+    }
+  ],
+  "tags": [
+    "Amendments",
+    "Assignment",
+    "Entire Agreement",
+    "Force Majeure",
+    "Notices"
+  ],
+  "count": 5,
+  "split": "test"
+}
