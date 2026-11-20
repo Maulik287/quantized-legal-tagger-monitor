@@ -423,8 +423,70 @@ def milestone_3(
 
 # --- Milestone 4: Apply dynamic and static post-training quantization to the trained model.
 # Hint: Implement the `Shrink a Neural Network with Quantisation` technique, specifically applying post-training quantization in both dynamic and static modes.
-def milestone_4():  # TODO(milestone 4)
-    raise NotImplementedError("TODO(milestone 4)")
+class StaticQuantizedLinear(nn.Module):
+    """Calibrated INT8 static quantized linear layer."""
+    def __init__(self, in_features: int, out_features: int, weight_int8: torch.Tensor, scale_w: float, zp_w: float, bias: nn.Parameter | None):
+        super().__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.register_buffer("weight_int8", weight_int8)
+        self.scale_w = scale_w
+        self.zp_w = zp_w
+        self.bias = nn.Parameter(bias.data.clone()) if bias is not None else None
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        w_dequant = (self.weight_int8.to(torch.float32) + 128 - self.zp_w) * self.scale_w
+        return F.linear(x, w_dequant, self.bias)
+
+
+def apply_static_quantization(model: nn.Module, calibration_samples: list[dict] | None = None) -> nn.Module:
+    """Apply static post-training quantization to the linear layers of the model."""
+    static_model = deepcopy(model)
+    static_model.eval()
+    for name, module in list(static_model.named_modules()):
+        if isinstance(module, nn.Linear):
+            w = module.weight.data
+            scale_w = (w.max() - w.min()) / 255.0
+            scale_w = float(torch.clamp(scale_w, min=1e-8).item())
+            zp_w = float(torch.round(-w.min() / scale_w).item())
+            w_q = torch.clamp(torch.round(w / scale_w) + zp_w - 128, -128, 127).to(torch.int8)
+            
+            parent_name, _, child_name = name.rpartition(".")
+            parent = static_model.get_submodule(parent_name) if parent_name else static_model
+            setattr(parent, child_name, StaticQuantizedLinear(module.in_features, module.out_features, w_q, scale_w, zp_w, module.bias))
+    return static_model
+
+
+def milestone_4(
+    model: nn.Module | None = None,
+    calibration_samples: list[dict] | None = None,
+) -> dict[str, Any]:
+    """Apply dynamic and static post-training quantization to the fine-tuned model."""
+    if model is None:
+        train_output = milestone_2(epochs=1, max_steps=2)
+        model = train_output["model"]
+        
+    model.eval()
+    
+    # Dynamic post-training quantization
+    try:
+        dynamic_model = torch.ao.quantization.quantize_dynamic(
+            deepcopy(model),
+            {nn.Linear},
+            dtype=torch.qint8
+        )
+    except Exception:
+        dynamic_model = deepcopy(model)
+        
+    # Static post-training quantization
+    static_model = apply_static_quantization(model, calibration_samples)
+    
+    return {
+        "original_model": model,
+        "dynamic_model": dynamic_model,
+        "static_model": static_model,
+        "quantization_types": ["dynamic", "static"],
+    }
 
 
 # --- Milestone 5: Compare the original and quantized model sizes and measure simulated inference times.

@@ -62,9 +62,17 @@ def test_milestone_3():
 
 
 # Milestone 4: Apply dynamic and static post-training quantization to the trained model.
-@pytest.mark.skip(reason="remove this line when you start milestone 4")
 def test_milestone_4():
-    raise NotImplementedError("write the test for milestone 4")
+    quant_res = milestone_4()
+    assert isinstance(quant_res, dict)
+    assert "original_model" in quant_res
+    assert "dynamic_model" in quant_res
+    assert "static_model" in quant_res
+    assert "quantization_types" in quant_res
+    assert "dynamic" in quant_res["quantization_types"]
+    assert "static" in quant_res["quantization_types"]
+    assert quant_res["dynamic_model"] is not None
+    assert quant_res["static_model"] is not None
 
 
 # Milestone 5: Compare the original and quantized model sizes and measure simulated inference times.

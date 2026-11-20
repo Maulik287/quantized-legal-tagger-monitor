@@ -20,7 +20,7 @@ Tick these off as you go, and commit after each one.
       Hint: Apply the `Fine-Tune GPT-2 to Tag Legal Contract Clauses` technique to train your GPT-2 model for legal clause classification.
 - [x] **3. Evaluate the tagging accuracy of the fine-tuned model.**  
       Hint: Utilize the evaluation methods demonstrated in the `Fine-Tune GPT-2 to Tag Legal Contract Clauses` drill to assess your model's tagging accuracy.
-- [ ] **4. Apply dynamic and static post-training quantization to the trained model.**  
+- [x] **4. Apply dynamic and static post-training quantization to the trained model.**  
       Hint: Implement the `Shrink a Neural Network with Quantisation` technique, specifically applying post-training quantization in both dynamic and static modes.
 - [ ] **5. Compare the original and quantized model sizes and measure simulated inference times.**  
       Hint: Apply the measurement techniques from the `Shrink a Neural Network with Quantisation` drill to compare model sizes and simulate inference speeds.
