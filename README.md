@@ -24,7 +24,7 @@ Tick these off as you go, and commit after each one.
       Hint: Implement the `Shrink a Neural Network with Quantisation` technique, specifically applying post-training quantization in both dynamic and static modes.
 - [x] **5. Compare the original and quantized model sizes and measure simulated inference times.**  
       Hint: Apply the measurement techniques from the `Shrink a Neural Network with Quantisation` drill to compare model sizes and simulate inference speeds.
-- [ ] **6. Present a dashboard-like output of model efficiency metrics.**  
+- [x] **6. Present a dashboard-like output of model efficiency metrics.**  
       Hint: Organize and present the efficiency metrics obtained from the `Shrink a Neural Network with Quantisation` drill in a clear, comparative format suitable for a dashboard.
 
 ## Run it
@@ -37,6 +37,33 @@ pip install -r requirements.txt
 cp .env.example .env        # then choose a model; see the comments inside
 python -m app.cli hello
 pytest
+```
+
+### CLI Commands
+
+You can run individual milestones or the complete pipeline via the CLI:
+
+```bash
+# 1. Prepare LEDGAR dataset subset
+python -m app.cli prepare-data --samples 15
+
+# 2. Fine-tune GPT-2 model with classification-as-generation
+python -m app.cli train --epochs 1 --steps 5
+
+# 3. Evaluate tagging accuracy
+python -m app.cli evaluate
+
+# 4. Apply dynamic and static post-training quantization
+python -m app.cli quantize
+
+# 5. Benchmark size and inference speeds
+python -m app.cli benchmark --runs 5
+
+# 6. Display the efficiency metrics dashboard
+python -m app.cli dashboard
+
+# Run the complete end-to-end pipeline:
+python -m app.cli run-all
 ```
 
 Your work goes in `app/core.py` (one stub per milestone) and `tests/test_core.py`. The first tests pass already; they

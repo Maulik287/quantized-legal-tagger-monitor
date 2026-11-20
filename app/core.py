@@ -599,5 +599,97 @@ def milestone_5(
 
 # --- Milestone 6: Present a dashboard-like output of model efficiency metrics.
 # Hint: Organize and present the efficiency metrics obtained from the `Shrink a Neural Network with Quantisation` drill in a clear, comparative format suitable for a dashboard.
-def milestone_6():  # TODO(milestone 6)
-    raise NotImplementedError("TODO(milestone 6)")
+def generate_dashboard_table(metrics: dict[str, Any]) -> str:
+    """Generate a clean ASCII dashboard table from efficiency metrics."""
+    orig = metrics.get("original", {})
+    dyn = metrics.get("dynamic", {})
+    stat = metrics.get("static", {})
+    
+    header = (
+        "+----------------------+---------------+-----------+------------+--------------+---------+------------------+\n"
+        "| Model Variant        | Precision     | Size (MB) | Size Red.  | Latency (ms) | Speedup | Throughput (qps) |\n"
+        "+----------------------+---------------+-----------+------------+--------------+---------+------------------+"
+    )
+    
+    orig_row = (
+        f"| {orig.get('model_type', 'Original'):<20} | {'FP32':<13} | "
+        f"{orig.get('size_mb', 0.0):<9.3f} | {'Baseline':<10} | "
+        f"{orig.get('latency_ms', 0.0):<12.2f} | {'1.00x':<7} | "
+        f"{orig.get('throughput_qps', 0.0):<16.1f} |"
+    )
+    
+    dyn_red = f"-{dyn.get('size_reduction_pct', 0.0):.1f}%"
+    dyn_sp = f"{dyn.get('speedup', 1.0):.2f}x"
+    dyn_row = (
+        f"| {dyn.get('model_type', 'INT8 Dynamic'):<20} | {'INT8':<13} | "
+        f"{dyn.get('size_mb', 0.0):<9.3f} | {dyn_red:<10} | "
+        f"{dyn.get('latency_ms', 0.0):<12.2f} | {dyn_sp:<7} | "
+        f"{dyn.get('throughput_qps', 0.0):<16.1f} |"
+    )
+    
+    stat_red = f"-{stat.get('size_reduction_pct', 0.0):.1f}%"
+    stat_sp = f"{stat.get('speedup', 1.0):.2f}x"
+    stat_row = (
+        f"| {stat.get('model_type', 'INT8 Static'):<20} | {'INT8':<13} | "
+        f"{stat.get('size_mb', 0.0):<9.3f} | {stat_red:<10} | "
+        f"{stat.get('latency_ms', 0.0):<12.2f} | {stat_sp:<7} | "
+        f"{stat.get('throughput_qps', 0.0):<16.1f} |"
+    )
+    
+    footer = "+----------------------+---------------+-----------+------------+--------------+---------+------------------+"
+    return "\n".join([header, orig_row, dyn_row, stat_row, footer])
+
+
+def milestone_6(
+    metrics: dict[str, Any] | None = None,
+    save_path: str | None = None,
+) -> dict[str, Any]:
+    """Present a dashboard-like output of model efficiency metrics."""
+    if metrics is None:
+        metrics = milestone_5(num_runs=2)
+        
+    table_str = generate_dashboard_table(metrics)
+    
+    dyn_red = metrics.get("dynamic", {}).get("size_reduction_pct", 0.0)
+    stat_red = metrics.get("static", {}).get("size_reduction_pct", 0.0)
+    dyn_speed = metrics.get("dynamic", {}).get("speedup", 1.0)
+    stat_speed = metrics.get("static", {}).get("speedup", 1.0)
+    
+    summary = (
+        f"Quantization Analysis for Legal Aid Document Processing:\n"
+        f"- Post-training quantization reduced model size by up to {max(dyn_red, stat_red):.1f}%.\n"
+        f"- Simulated inference speedup reached up to {max(dyn_speed, stat_speed):.2f}x on local CPU.\n"
+        f"- Both dynamic and static INT8 models drastically lower memory constraints on edge devices."
+    )
+    
+    recommendation = (
+        "Deployment Guidance: For standard consumer laptops used in legal aid field work, "
+        "INT8 Dynamic Quantization offers zero-calibration setup with significant memory savings. "
+        "For dedicated local document triage servers, INT8 Static Quantization is recommended for highest throughput."
+    )
+    
+    dashboard_output = {
+        "table": table_str,
+        "metrics": metrics,
+        "summary": summary,
+        "recommendation": recommendation,
+    }
+    
+    if save_path:
+        out_f = Path(save_path)
+        out_f.parent.mkdir(parents=True, exist_ok=True)
+        out_f.write_text(json.dumps(dashboard_output, indent=2))
+    else:
+        # Also persist to app store if data directory exists
+        try:
+            from app.storage import Store
+            store = Store()
+            store.put("dashboard", {
+                "timestamp": time.time(),
+                "metrics": metrics,
+                "summary": summary,
+            })
+        except Exception:
+            pass
+            
+    return dashboard_output

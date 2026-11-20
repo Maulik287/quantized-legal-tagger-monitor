@@ -95,6 +95,13 @@ def test_milestone_5():
 
 
 # Milestone 6: Present a dashboard-like output of model efficiency metrics.
-@pytest.mark.skip(reason="remove this line when you start milestone 6")
 def test_milestone_6():
-    raise NotImplementedError("write the test for milestone 6")
+    dashboard = milestone_6()
+    assert isinstance(dashboard, dict)
+    assert "table" in dashboard
+    assert "metrics" in dashboard
+    assert "summary" in dashboard
+    assert "recommendation" in dashboard
+    assert len(dashboard["table"]) > 0
+    assert "FP32" in dashboard["table"] or "Original" in dashboard["table"]
+    assert "INT8" in dashboard["table"] or "Dynamic" in dashboard["table"]
