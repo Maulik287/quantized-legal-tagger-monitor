@@ -491,8 +491,110 @@ def milestone_4(
 
 # --- Milestone 5: Compare the original and quantized model sizes and measure simulated inference times.
 # Hint: Apply the measurement techniques from the `Shrink a Neural Network with Quantisation` drill to compare model sizes and simulate inference speeds.
-def milestone_5():  # TODO(milestone 5)
-    raise NotImplementedError("TODO(milestone 5)")
+def measure_model_size_mb(model: nn.Module) -> float:
+    """Measure model serialized weight footprint in megabytes."""
+    buffer = io.BytesIO()
+    torch.save(model.state_dict(), buffer)
+    size_mb = len(buffer.getvalue()) / (1024.0 * 1024.0)
+    return round(size_mb, 4)
+
+
+def measure_inference_speed(
+    model: nn.Module,
+    tokenizer: SimpleLegalTokenizer,
+    sample_inputs: list[dict],
+    num_runs: int = 3,
+) -> tuple[float, float]:
+    """Measure average simulated inference latency (ms) and throughput (queries/sec)."""
+    model.eval()
+    encoded_prompts = [
+        torch.tensor([tokenizer.encode(s["prompt"])], dtype=torch.long)
+        for s in sample_inputs
+    ]
+    if not encoded_prompts:
+        return 0.0, 0.0
+        
+    with torch.no_grad():
+        # Warmup pass
+        for inp in encoded_prompts:
+            _ = model(inp)
+            
+        t0 = time.perf_counter()
+        total_evals = 0
+        for _ in range(num_runs):
+            for inp in encoded_prompts:
+                _ = model(inp)
+                total_evals += 1
+        elapsed = time.perf_counter() - t0
+        
+    latency_ms = round((elapsed / total_evals) * 1000.0, 3) if total_evals > 0 else 0.0
+    throughput_qps = round(1000.0 / latency_ms, 2) if latency_ms > 0 else 0.0
+    return latency_ms, throughput_qps
+
+
+def milestone_5(
+    models_dict: dict[str, Any] | None = None,
+    tokenizer: SimpleLegalTokenizer | None = None,
+    sample_inputs: list[dict] | None = None,
+    num_runs: int = 3,
+) -> dict[str, Any]:
+    """Compare model sizes and measure simulated inference times across original and quantized models."""
+    if models_dict is None:
+        models_dict = milestone_4()
+        
+    if tokenizer is None:
+        tokenizer = SimpleLegalTokenizer()
+        
+    if sample_inputs is None:
+        data = milestone_1(split="test", num_samples=3)
+        sample_inputs = data["samples"]
+        
+    orig_model = models_dict["original_model"]
+    dyn_model = models_dict["dynamic_model"]
+    stat_model = models_dict["static_model"]
+    
+    orig_size = measure_model_size_mb(orig_model)
+    dyn_size = measure_model_size_mb(dyn_model)
+    stat_size = measure_model_size_mb(stat_model)
+    
+    orig_lat, orig_qps = measure_inference_speed(orig_model, tokenizer, sample_inputs, num_runs)
+    dyn_lat, dyn_qps = measure_inference_speed(dyn_model, tokenizer, sample_inputs, num_runs)
+    stat_lat, stat_qps = measure_inference_speed(stat_model, tokenizer, sample_inputs, num_runs)
+    
+    def calc_reduction(orig: float, quant: float) -> float:
+        if orig <= 0:
+            return 0.0
+        return round(((orig - quant) / orig) * 100.0, 2)
+        
+    def calc_speedup(orig_l: float, quant_l: float) -> float:
+        if quant_l <= 0:
+            return 1.0
+        return round(orig_l / quant_l, 2)
+        
+    return {
+        "original": {
+            "model_type": "FP32 Original",
+            "size_mb": orig_size,
+            "latency_ms": orig_lat,
+            "throughput_qps": orig_qps,
+        },
+        "dynamic": {
+            "model_type": "INT8 Dynamic Quantized",
+            "size_mb": dyn_size,
+            "latency_ms": dyn_lat,
+            "throughput_qps": dyn_qps,
+            "size_reduction_pct": calc_reduction(orig_size, dyn_size),
+            "speedup": calc_speedup(orig_lat, dyn_lat),
+        },
+        "static": {
+            "model_type": "INT8 Static Quantized",
+            "size_mb": stat_size,
+            "latency_ms": stat_lat,
+            "throughput_qps": stat_qps,
+            "size_reduction_pct": calc_reduction(orig_size, stat_size),
+            "speedup": calc_speedup(orig_lat, stat_lat),
+        },
+    }
 
 
 # --- Milestone 6: Present a dashboard-like output of model efficiency metrics.

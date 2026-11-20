@@ -76,9 +76,22 @@ def test_milestone_4():
 
 
 # Milestone 5: Compare the original and quantized model sizes and measure simulated inference times.
-@pytest.mark.skip(reason="remove this line when you start milestone 5")
 def test_milestone_5():
-    raise NotImplementedError("write the test for milestone 5")
+    metrics = milestone_5(num_runs=2)
+    assert isinstance(metrics, dict)
+    assert "original" in metrics
+    assert "dynamic" in metrics
+    assert "static" in metrics
+    for key in ("original", "dynamic", "static"):
+        assert "size_mb" in metrics[key]
+        assert "latency_ms" in metrics[key]
+        assert "throughput_qps" in metrics[key]
+        assert metrics[key]["size_mb"] > 0
+        assert metrics[key]["latency_ms"] >= 0
+    assert "size_reduction_pct" in metrics["dynamic"]
+    assert "speedup" in metrics["dynamic"]
+    assert "size_reduction_pct" in metrics["static"]
+    assert "speedup" in metrics["static"]
 
 
 # Milestone 6: Present a dashboard-like output of model efficiency metrics.

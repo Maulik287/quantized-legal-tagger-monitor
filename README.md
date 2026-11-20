@@ -22,7 +22,7 @@ Tick these off as you go, and commit after each one.
       Hint: Utilize the evaluation methods demonstrated in the `Fine-Tune GPT-2 to Tag Legal Contract Clauses` drill to assess your model's tagging accuracy.
 - [x] **4. Apply dynamic and static post-training quantization to the trained model.**  
       Hint: Implement the `Shrink a Neural Network with Quantisation` technique, specifically applying post-training quantization in both dynamic and static modes.
-- [ ] **5. Compare the original and quantized model sizes and measure simulated inference times.**  
+- [x] **5. Compare the original and quantized model sizes and measure simulated inference times.**  
       Hint: Apply the measurement techniques from the `Shrink a Neural Network with Quantisation` drill to compare model sizes and simulate inference speeds.
 - [ ] **6. Present a dashboard-like output of model efficiency metrics.**  
       Hint: Organize and present the efficiency metrics obtained from the `Shrink a Neural Network with Quantisation` drill in a clear, comparative format suitable for a dashboard.
