@@ -33,9 +33,15 @@ def test_milestone_1():
 
 
 # Milestone 2: Fine-tune a GPT-2 model to tag legal clauses using the classification as generation approach.
-@pytest.mark.skip(reason="remove this line when you start milestone 2")
 def test_milestone_2():
-    raise NotImplementedError("write the test for milestone 2")
+    train_res = milestone_2(epochs=1, max_steps=2)
+    assert isinstance(train_res, dict)
+    assert "model" in train_res
+    assert "tokenizer" in train_res
+    assert "loss" in train_res
+    assert "steps" in train_res
+    assert train_res["loss"] >= 0.0
+    assert train_res["steps"] >= 1
 
 
 # Milestone 3: Evaluate the tagging accuracy of the fine-tuned model.
